@@ -1,36 +1,91 @@
+const attractions = {
+    "France": {
+        budget: 1500,
+        flightTime: "6 hours",
+        attractions: [
+            { name: "Eiffel Tower", image: "eiffel_tower.jpg" },
+            { name: "Louvre Museum", image: "louvre_museum.jpg" },
+            { name: "Notre-Dame Cathedral", image: "notre_dame.jpg" }
+        ]
+    },
+    "Germany": {
+        budget: 1400,
+        flightTime: "5 hours",
+        attractions: [
+            { name: "Brandenburg Gate", image: "brandenburg_gate.jpg" },
+            { name: "Neuschwanstein Castle", image: "neuschwanstein_castle.jpg" },
+            { name: "Berlin Wall", image: "berlin_wall.jpg" }
+        ]
+    },
+    "Spain": {
+        budget: 1300,
+        flightTime: "5.5 hours",
+        attractions: [
+            { name: "Sagrada Familia", image: "sagrada_familia.jpg" },
+            { name: "Alhambra", image: "alhambra.jpg" },
+            { name: "Park Güell", image: "park_guell.jpg" }
+        ]
+    },
+    "Italy": {
+        budget: 1400,
+        flightTime: "5.5 hours",
+        attractions: [
+            { name: "Colosseum", image: "colosseum.jpg" },
+            { name: "Leaning Tower of Pisa", image: "leaning_tower_of_pisa.jpg" },
+            { name: "Venice Canals", image: "venice_canals.jpg" }
+        ]
+    },
+    "Iran": {
+        budget: 800,
+        drivingDistance: "0 km",
+        attractions: [
+            { name: "Persepolis", image: "persepolis.jpg" },
+            { name: "Naqsh-e Jahan Square", image: "naqsh_e_jahan.jpg" },
+            { name: "Golestan Palace", image: "golestan_palace.jpg" }
+        ]
+    }
+};
+
 async function getTravelSuggestions() {
     const country = document.getElementById('country').value;
-    const budget = document.getElementById('budget').value;
-    const duration = document.getElementById('duration').value;
+    const budget = parseFloat(document.getElementById('budget').value);
+    const duration = parseInt(document.getElementById('duration').value);
 
-    // API Keys
-    const weatherApiKey = '0fa70fe173723ae8bd45db8a1dc742ea';
-    const amadeusApiKey = '1ZQhiPZf9LPirbMuV6VbyPM9SqCplx38';
-
-    try {
-        // Fetch Weather Information
-        const weatherEndpoint = `https://api.openweathermap.org/data/2.5/weather?q=${country}&appid=${weatherApiKey}`;
-        const weatherResponse = await fetch(weatherEndpoint);
-        if (!weatherResponse.ok) throw new Error('Weather API error');
-        const weatherData = await weatherResponse.json();
-
-        // Fetch Places of Interest
-        const amadeusEndpoint = `https://test.api.amadeus.com/v1/reference-data/locations/pois?latitude=48.8566&longitude=2.3522&radius=10&apikey=${amadeusApiKey}`;
-        const amadeusResponse = await fetch(amadeusEndpoint);
-        if (!amadeusResponse.ok) throw new Error('Amadeus API error');
-        const amadeusData = await amadeusResponse.json();
-
-        // Display Suggestions
-        let suggestions = `For the country ${country} with a budget of ${budget} Toman and travel duration of ${duration} days, here are the top suggestions:<br><br>`;
-        suggestions += `<strong>Weather:</strong> ${weatherData.weather[0].description}<br><br>`;
-
-        amadeusData.data.forEach(poi => {
-            suggestions += `<strong>${poi.name}</strong>: ${poi.category}<br>`;
-        });
-
-        document.getElementById('suggestions').innerHTML = suggestions;
-    } catch (error) {
-        document.getElementById('suggestions').innerHTML = 'An error occurred while fetching travel suggestions. Please try again later.';
-        console.error(error);
+    if (!attractions[country]) {
+        document.getElementById('suggestions').innerHTML = 'Attractions not available for this destination.';
+        return;
     }
+
+    const minBudget = attractions[country].budget;
+    const suggestions = [];
+
+    if (budget < minBudget) {
+        for (const [key, value] of Object.entries(attractions)) {
+            if (budget >= value.budget) {
+                suggestions.push(key);
+            }
+        }
+
+        if (suggestions.length > 0) {
+            document.getElementById('suggestions').innerHTML = `Your budget is not sufficient for ${country}. How about visiting one of these countries instead: ${suggestions.join(', ')}.`;
+        } else {
+            document.getElementById('suggestions').innerHTML = 'Your budget is not sufficient for any suggested destination. Please increase your budget.';
+        }
+        return;
+    }
+
+    const selectedCountry = attractions[country];
+    let details = `For the country ${country} with a budget of ${budget} dollars and travel duration of ${duration} days, here are the top attractions:<br><br>`;
+
+    if (country === "Iran") {
+        details += `<strong>Driving Distance from Tehran:</strong> ${selectedCountry.drivingDistance}<br><br>`;
+    } else {
+        details += `<strong>Flight Time from Iran:</strong> ${selectedCountry.flightTime}<br><br>`;
+    }
+
+    selectedCountry.attractions.forEach(attraction => {
+        details += `<strong>${attraction.name}</strong><br><img src="${attraction.image}" alt="${attraction.name}" style="width: 100px; height: auto;"><br><br>`;
+    });
+
+    document.getElementById('suggestions').innerHTML = details;
 }
