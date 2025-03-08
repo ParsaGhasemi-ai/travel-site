@@ -65,4 +65,6 @@ form button:hover {
 #suggestions img {
     display: block;
     margin: 0.5em auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
