@@ -10,31 +10,21 @@ window.onload = function() {
     }
 
     const minBudget = attractions[country].budget;
-    const suggestions = [];
+    const visaTime = attractions[country].visaProcessingTime;
 
     if (budget < minBudget) {
-        for (const [key, value] of Object.entries(attractions)) {
-            if (budget >= value.budget) {
-                suggestions.push(key);
-            }
-        }
-
-        if (suggestions.length > 0) {
-            document.getElementById('suggestions').innerHTML = `Your budget is not sufficient for ${country}. How about visiting one of these countries instead: ${suggestions.join(', ')}.`;
-        } else {
-            document.getElementById('suggestions').innerHTML = 'Your budget is not sufficient for any suggested destination. Please increase your budget.';
-        }
+        document.getElementById('suggestions').innerHTML = `Your budget is not sufficient for ${country}. The minimum budget required is ${minBudget} dollars.`;
         return;
     }
 
     const selectedCountry = attractions[country];
-    let details = `For the country ${country} with a budget of ${budget} dollars and travel duration of ${duration} days, here are the top attractions:<br><br>`;
-
-    if (country === "Iran") {
-        details += `<strong>Driving Distance from Tehran:</strong> ${selectedCountry.drivingDistance}<br><br>`;
-    } else {
-        details += `<strong>Flight Time from Iran:</strong> ${selectedCountry.flightTime}<br><br>`;
-    }
+    let details = `
+        <strong>Country:</strong> ${country}<br>
+        <strong>Visa Processing Time:</strong> ${visaTime}<br>
+        <strong>Minimum Budget:</strong> ${minBudget} dollars<br>
+        <strong>Flight Time:</strong> ${selectedCountry.flightTime || "N/A"}<br><br>
+        <strong>Top Attractions:</strong><br>
+    `;
 
     selectedCountry.attractions.forEach(attraction => {
         details += `<strong>${attraction.name}</strong><br><img src="${attraction.image}" alt="${attraction.name}" style="width: 100px; height: auto;"><br><br>`;
