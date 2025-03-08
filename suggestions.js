@@ -13,7 +13,10 @@ window.onload = function() {
     const visaTime = attractions[country].visaProcessingTime;
 
     if (budget < minBudget) {
-        document.getElementById('suggestions').innerHTML = `Your budget is not sufficient for ${country}. The minimum budget required is ${minBudget} dollars.`;
+        document.getElementById('suggestions').innerHTML = `
+            <strong>Insufficient Budget:</strong> Your budget is not sufficient for ${country}.<br>
+            <strong>Minimum Required Budget:</strong> ${minBudget} dollars.<br>
+        `;
         return;
     }
 
@@ -31,4 +34,4 @@ window.onload = function() {
     });
 
     document.getElementById('suggestions').innerHTML = details;
-}
+};
