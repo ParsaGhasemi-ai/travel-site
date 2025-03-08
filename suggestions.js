@@ -3,7 +3,7 @@ const attractions = {
         budget: 1500,
         flightTime: "6 hours",
         attractions: [
-            { name: "Eiffel Tower", image: "eiffel_tower.jpg" },
+            { name: "Eiffel Tower", image: "images/eiffel_tower.jpg" },
             { name: "Louvre Museum", image: "louvre_museum.jpg" },
             { name: "Notre-Dame Cathedral", image: "notre_dame.jpg" }
         ]
